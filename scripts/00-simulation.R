@@ -46,3 +46,21 @@ simulated_data =
                   prob = prob_type),
     opening_date = as.Date("2023-01-01") #static date as placeholder
   )
+
+## Create graphs of simulated data
+
+# Bar graph of district distribution
+simulated_data |> 
+  ggplot(aes(x = district)) +
+  geom_bar()
+
+# Bar graph of district distribution
+simulated_data |> 
+  ggplot(aes(x = type)) +
+  geom_bar()
+
+# Stacked barchart 
+simulated_data |> 
+  ggplot(aes(fill=type, x = district)) +
+  geom_bar(position="dodge")
+  #geom_bar(position="stack")
