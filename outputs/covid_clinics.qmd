@@ -1,0 +1,38 @@
+---
+title: "Covid Clinics in Toronto"
+title-block-banner: true
+subtitle: "TBD"
+abstract: "TBD"
+thanks: "Code and data supporting this analysis is available at: https://github.com/christina-wei/INF3014-1-Covid-Clinics.git"
+author: "Christina Wei"
+date: today
+date-format: long
+format: pdf
+editor: visual
+toc: true
+number-sections: true
+bibliography: ref.bib
+---
+
+## Plan
+
+Clinics added per month
+
+Clinic per district
+
+Clinic by type
+
+## Introduction
+
+## Data
+
+Data cleaned by using the open source statistically programming language R [@r].
+Tidyverse reference [@rTidyverse]
+
+## Results
+
+## Discussion
+
+## Appendix
+
+## Reference
