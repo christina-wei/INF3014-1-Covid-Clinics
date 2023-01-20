@@ -1,13 +1,11 @@
 #### Preamble ####
-# Purpose: Clean the survey data downloaded from [...UPDATE ME!!!!!]
+# Purpose: Clean covid clinic, ward info, and ward population data as well as combine into one dataset to be analyzed
 # Author: Christina Wei
 # Data: 19 January 2023
 # Contact: christina.wei@mail.utoronto.ca
 # License: MIT
 # Pre-requisites: 
-# - Need to have downloaded the ACS data and saved it to inputs/data
-# - Don't forget to gitignore it!
-# - Change these to yours
+  # 00-download_data.R
 
 
 #### Workspace setup ####
@@ -57,6 +55,7 @@ cleaned_clinic_data =
   )
 
 # simplify the types of clinics
+# referred to code from https://tellingstorieswithdata.com/02-drinking_from_a_fire_hose.html
 cleaned_clinic_data = 
   cleaned_clinic_data |>
   mutate(
@@ -74,6 +73,7 @@ rm(raw_clinic_data) #remove raw data from environment
 ## Ward data ##
 
 # select ward code and name, rename columns, and make code numeric
+# referred to code from https://tellingstorieswithdata.com/02-drinking_from_a_fire_hose.html
 cleaned_ward_data = 
   cleaned_ward_data |>
   select(

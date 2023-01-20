@@ -1,7 +1,7 @@
 ---
 title: "Covid Clinics in Toronto"
 title-block-banner: true
-subtitle: "TBD"
+#subtitle: "TBD"
 abstract: "TBD"
 thanks: "Code and data supporting this analysis is available at: https://github.com/christina-wei/INF3014-1-Covid-Clinics.git"
 author: "Christina Wei"
@@ -14,7 +14,59 @@ number-sections: true
 bibliography: ref.bib
 ---
 
-## Plan
+```{r}
+#| message: false
+#| echo: false
+
+#### Workspace set-up ####
+
+## Load packages
+library(tidyverse) # a collection of data-related packages
+
+#### Read in cleaned data ####
+cleaned_data = read_csv(
+  file = "../inputs/data/cleaned_clinic_data_combined.csv",
+  show_col_types = FALSE
+)
+```
+
+## Introduction
+
+-   Overall Covid-19 situation worldwide
+
+-   How Canada handled Covid cases
+
+-   Sustained immunization effortin Canada today - dataset
+
+-   Potential biases to watch out for - marginization
+
+## Data
+
+Overview of the data
+
+-   What datasets are used
+
+-   What type of data are included
+
+-   What R packages are used in analysis
+
+Description of the cleaning process
+
+Data cleaned by using the open source statistically programming language R [@r]. Tidyverse reference [@rTidyverse], which includes packages ggplot2 [@rGgplot2], dplyr [@rDplyr], readr [@rReadr], tibble [@rTibble] (https://www.tidyverse.org/packages/). Use janitor to clean names \[@rJanitor\]
+
+Data downloaded using [@rOpenDataToronto], data sources from \[@torontoCityWards\], [@torontoCovidClinics], [@torontoWardProfiles]
+
+Measurements
+
+-   Doesn't not track clinic openings and closing over time
+
+-   Hours and time are not tracked properly - just because there is a clinic doesn't mean it is accessible - eligibility criteria, hours etc.
+
+-   Population from 2018 - a bit outdated
+
+-   Would be useful to have utilization rates as well
+
+## Results
 
 Clinics added per month
 
@@ -22,16 +74,25 @@ Clinic per district
 
 Clinic by type
 
-## Introduction
+```{r}
+#| echo: false
 
-## Data
+cleaned_data |>
+  ggplot(aes(x = ward_name, fill=location_type)) + 
+  geom_bar() + #bar graph
+  theme_minimal() + #neater theme
+  theme(axis.text.x = element_text(angle=90)) +
+  labs(
+    x = "Party",
+    y = "Number of seats"
+  ) #add labels
+```
 
-Data cleaned by using the open source statistically programming language R [@r].
-Tidyverse reference [@rTidyverse]
-
-## Results
+## 
 
 ## Discussion
+
+## Conclusion
 
 ## Appendix
 
