@@ -34,7 +34,7 @@ set.seed(311) #random seed
 num_observations = 100
 
 simulated_data = 
-  data.frame(
+  tibble(
     clinic_id = c(1:num_observations),
     district = sample(x = sim_district, 
                       size = num_observations,
@@ -44,23 +44,64 @@ simulated_data =
                   size = num_observations,
                   replace = TRUE,
                   prob = prob_type),
-    opening_date = as.Date("2023-01-01") #static date as placeholder
   )
+
+
+## Create summary statistics of number of clinics per district and 
+## compare it with the number of population in each district
+
+# summarize clinics by district
+clinic_per_district = 
+  simulated_data |>
+    group_by(district) |>
+    count() |>
+    rename("num_clinics" = "n")
+
+# add population column to the data
+clinic_per_district['population'] = sim_population
+
+# compute bps per district
+clinic_per_district =
+  clinic_per_district |>
+    mutate(
+      bps_of_population =
+        num_clinics / population * 10000
+    )
+
 
 ## Create graphs of simulated data
 
-# Bar graph of district distribution
+# Bar graph of clinics per district, by type
 simulated_data |> 
-  ggplot(aes(x = district)) +
-  geom_bar()
+  ggplot(aes(fill = type, x = district)) +
+  geom_bar(position = "dodge")
 
-# Bar graph of district distribution
-simulated_data |> 
-  ggplot(aes(x = type)) +
-  geom_bar()
 
-# Stacked barchart 
-simulated_data |> 
-  ggplot(aes(fill=type, x = district)) +
-  geom_bar(position="dodge")
-  #geom_bar(position="stack")
+## Create graph of clinic summary by district
+
+clinic_per_district |>
+  ggplot(aes(x = district, y = bps_of_population)) + 
+  geom_bar(stat="identity") + 
+  theme_minimal()
+
+## Data validation
+
+# 4 districts in the data
+length(unique(simulated_data$district)) == 4 
+
+# 4 types of clinics in the data
+length(unique(simulated_data$type)) == 4 
+
+# check that each type of clinic is less than 100 
+simulated_data |>
+  group_by(type) |>
+  count() |>
+  filter(n > num_observations) |>
+  sum() == 0
+
+# check the number of clinics in each district is less than 100 
+simulated_data |>
+  group_by(district) |>
+  count() |>
+  filter(n > num_observations) |>
+  sum() == 0
