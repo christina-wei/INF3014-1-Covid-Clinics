@@ -1,8 +1,8 @@
 ---
-title: "Covid Clinics in Toronto"
+title: "No Evidence of Discrimation Accessing COVID-19 Immunization Clinics Across the City of Toronto"
 title-block-banner: true
 #subtitle: "TBD"
-abstract: "TBD"
+abstract: "COVID-19 immunization clinic and ward profile datasets were used in the analysis of vaccine access across the City of Toronto. Based on analysis of number of clinics and household income, no systematic discrimation was discovered in this analysis. There is a slightly positive correlation between number of clinics and population, supporting the hypothesis that there is equitable access to COVID-19 vaccines across the city. Further analysis should be performed to analyze utilization data alongside COVID-19 clinic access."
 thanks: "Code and data supporting this analysis is available at: https://github.com/christina-wei/INF3014-1-Covid-Clinics.git"
 author: "Christina Wei"
 date: today
@@ -22,78 +22,226 @@ bibliography: ref.bib
 
 ## Load packages
 library(tidyverse) # a collection of data-related packages
+library(knitr) # for kable
+library(kableExtra)
 
 #### Read in cleaned data ####
-cleaned_data = read_csv(
-  file = "../inputs/data/cleaned_clinic_data_combined.csv",
+
+cleaned_clinic_data = read_csv(
+  file = "../inputs/data/cleaned_clinic_data.csv",
+  show_col_types = FALSE
+)
+
+summarized_clinic_data = read_csv(
+  file = "../inputs/data/summarized_clinic_data.csv",
   show_col_types = FALSE
 )
 ```
 
 ## Introduction
 
--   Overall Covid-19 situation worldwide
+The new coronavirus (COVID-19) outbreak was deemed a global pandemic by the World Health Organization (WHO) on March 11, 2020 [@pandemic]. The world has gone into a global lockdown in order to control the spread of the disease. As the vaccine became available in early 2021, Canada began preparations to roll out COVID-19 vaccines. Specifically in the City of Toronto, the government opened various immunization clinics across the city, as well as partnered with hospitals and pharmacies to provide access to vaccines. However, some criticized the government for inequitable access to vaccines, discriminating against vulnerable populations [@covidLawsuit]. As the vaccine rollout progresses, there are concerns that high-risk individuals in Ontario are lagging in vaccinations [@covidHighrisk].
 
--   How Canada handled Covid cases
+One of the factors that could contribute to discrimination of COVID-19 vaccines is access to immunization sites to receive the vaccination. Therefore, it is important to analyze if there is equitable distribution of immunization clinics across the city, as well as potential bias that may exist in the system. In this paper, I will analyze a snapshot of COVID-19 immunization clinic data as of January 22, 2023 alongside 2016 Census data to investigate whether household income or population have impacts on the availability of COVID-19 clinic sites.
 
--   Sustained immunization effortin Canada today - dataset
-
--   Potential biases to watch out for - marginization
+In the Data section, I will discuss the different data sources used for analysis, as well as the data cleaning process applied to these datasets. The following Results section will present my data analysis in detail, presenting trends and correlations discovered along the way. The Discussion section shares more insights into the data findings, as well as discussing measurement errors and limitations of this analysis. Finally the paper wraps up with Conclusion summarizing the important discoveries from this paper.
 
 ## Data
 
-Overview of the data
+Data used in this paper are retrieved from Open Data Toronto Portal through the library `opendatatoronto` [@rOpenDataToronto]. Three different data sources were leveraged to analyze COVID-19 immunization clinics across Toronto: `COVID-19 Immunization Clinics` [@torontoCovidClinics], `Ward Profiles, 2018 (25-Ward Model)` [@torontoWardProfiles], and `City Wards` [@torontoCityWards]. Data was cleaned and analyzed using the open source statistically programming language R [@r], using functionalities from `tidyverse` [@rTidyverse], `ggplot2` [@rGgplot2], `dplyr` [@rDplyr], `readr` [@rReadr], `tibble` [@rTibble], `janitor` [@rJanitor], `kableExtra` [@rKableExtra] and `knitr` [@rKnitr]. Details of the data extraction and cleaning processes are discussed in the subsections below.
 
--   What datasets are used
+### COVID-19 Immunization Clinics
 
--   What type of data are included
-
--   What R packages are used in analysis
-
-Description of the cleaning process
-
-Data cleaned by using the open source statistically programming language R [@r]. Tidyverse reference [@rTidyverse], which includes packages ggplot2 [@rGgplot2], dplyr [@rDplyr], readr [@rReadr], tibble [@rTibble] (https://www.tidyverse.org/packages/). Use janitor to clean names \[@rJanitor\]
-
-Data downloaded using [@rOpenDataToronto], data sources from \[@torontoCityWards\], [@torontoCovidClinics], [@torontoWardProfiles]
-
-Measurements
-
--   Doesn't not track clinic openings and closing over time
-
--   Hours and time are not tracked properly - just because there is a clinic doesn't mean it is accessible - eligibility criteria, hours etc.
-
--   Population from 2018 - a bit outdated
-
--   Would be useful to have utilization rates as well
-
-## Results
-
-Clinics added per month
-
-Clinic per district
-
-Clinic by type
+This dataset published by Toronto Public Health [@torontoCovidClinics] captures information about COVID-19 immunization clinics across the City of Toronto and is refreshed on a daily basis. The data used for analysis in this paper is captured as of January 22, 2023. Based on the data features described on the portal, the data should include information on clinic location, date added, contact information, eligibility criteria, availability and appointment booking details. However, through preliminary exploration of data that many data elements are not recorded properly for appointment, availability and eligibility related information. The columns designed to capture these data are not populated. Instead, information are typed in as free form comments in the `info` column, making it difficult to systematically extract details from this field. As a result, only columns with reasonable data are kept in the data cleaning process (see @tbl-cleaned_clinic_data). Basic data cleaning was applied to the column values to shorten the description of different types of clinics for readabiliy.
 
 ```{r}
 #| echo: false
+#| message: false
+#| label: tbl-cleaned_clinic_data
+#| tbl-cap: Sample of cleaned Covid-19 clinic data
 
-cleaned_data |>
-  ggplot(aes(x = ward_name, fill=location_type)) + 
-  geom_bar() + #bar graph
-  theme_minimal() + #neater theme
-  theme(axis.text.x = element_text(angle=90)) +
-  labs(
-    x = "Party",
-    y = "Number of seats"
-  ) #add labels
+#referenced kable stying from https://github.com/EthanSansom/torontocitytrees/blob/main/outputs/paper/paper.Rmd
+head(cleaned_clinic_data, 5) |>
+  kable(
+    #col.names = c("ID", "Name", "Type", "Date Added", "Geometry", "Ward Name"),
+    booktabs = TRUE
+  ) |>
+  kable_styling(font_size = 8)
 ```
 
-## 
+### Ward Profiles, 2018 (25-Ward Model)
+
+Ward profiles such as income and population would be interesting factors to analyze alongside COVID-19 immunization clinics. Therefore, the dataset for ward profiles [@torontoWardProfiles] based on 2016 census data has been included in analysis as well. This dataset is published by City Planning, and was last updated on February 11, 2021. The 25-ward model was chosen over the 47-ward model because it is matching the ward classification in the COVID-19 immunization clinic data. This dataset contains demographic, social and economic information for each ward, such as income and population.
+
+Ward profile data is stored in an Excel file with multiple tabs. The relevant data to be used for this paper's analysis is included the first tab, `2016 Census One Variable`. As such, only data for this tab was downloaded for analysis. Further data cleaning was performed to transpose the data and only keeping information relevant to income and population level for each ward (see @tbl-cleaned_ward_profile_data).
+
+```{r}
+#| echo: false
+#| message: false
+#| label: tbl-cleaned_ward_profile_data
+#| tbl-cap: Sample of cleaned ward profile data
+
+summarized_clinic_data |>
+  select (ward_code, population, income) |>
+  arrange (ward_code) |>
+  head(5) |>
+  kable(booktabs = TRUE)
+
+```
+
+However, there is no ward name in the dataset that was downloaded. Based on the Open Data Toronto Portal, there is a CSV file in the package, `25 Ward Names and Numbers`, that contains the mapping between ward codes and ward names. Unfortunately this particular resource does not download properly through the `opentorontodata` library [@rOpenDataToronto]. For the sake of reproducibility, another dataset, `City Wards` [@torontoCityWards], has been identified to fill in this gap.
+
+### City Wards
+
+The city wards dataset [@torontoCityWards] is published by City Clerk's Office, and was last updated on November 29, 2022. It contains information regarding the codes, names, and boundaries of Toronto's 25 wards. Data elements of ward code and ward name are selected from this dataset. Also the columns have been renamed to `ward_code` and `ward_name` to mach the naming conventions in the other datasets.
+
+### Combining Ward Data
+
+Using the `merge` function, ward profile data now contains information on ward code, ward name, population, and average income. COVID-19 immunization clinic data can be summarized by each ward name and the number of clinics per ward. This data is then injected into the ward profile dataset, with @tbl-summarized_ward_profile as the final result.
+
+```{r}
+#| echo: false
+#| message: false
+#| label: tbl-summarized_ward_profile
+#| tbl-cap: Sample of ward profile details
+
+summarized_clinic_data |>
+  arrange (ward_code) |>
+  kable(booktabs = TRUE)
+```
+
+## Results
+
+### COVID-19 Immunization Clinic Statistics
+
+As of January 22, 2023, there are 434 COVID-19 immunization clinics across the City of Toronto. Further breakdown shows that there are 5 clinics that are city operated, 16 clinics that are run by hospitals, and 415 are offered in local pharmacies. On average, there are 17 clinics per ward in Toronto, with standard deviation of 6. The wards with the highest number of clinics are: Toronto Center (Ward 13) with 29 clinics, Etobicoke-Lakeshore (Ward 3) with 28 clinics, and University-Rosedale (Ward 11) with 28 clinics. The wards with the lowest number of clinics are: Humber River-Black Creek (Ward 7) with 9 clinics, Davenport (Ward 9) with 12 clinics, Scarborough Southwest (Ward 20) with 12 clinics, Scarborough-Agincourt (Ward 22) with 12 clinics, and Scarborough-Rouge Park (Ward 25) with 12 clinics.
+
+```{r}
+#| echo: false
+#| message: false
+#| label: fig-clinic_statistics
+#| fig-cap: Number of COVID-19 Clinics Per Ward in Toronto
+
+# referenced leading zero code from https://www.edureka.co/community/2486/how-to-add-leading-zeros-in-r
+cleaned_clinic_data |>
+  merge(summarized_clinic_data) |>
+  ggplot(aes(x = paste(sprintf("%02d", ward_code), "-", ward_name), fill = location_type)) + 
+  geom_bar() + #bar graph
+  theme_minimal() + #neater theme
+  theme(axis.text.x = element_text(angle=90, size = 6)) + #rotate x-axis & smaller font
+  labs(
+    title = "Number of COVID-19 Clinics Per Ward in Toronto",
+    x = "Ward",
+    y = "Number of Clinics",
+    fill = "Type"
+  )  #add labels
+
+```
+
+### Ward Profile Based on 2016 Census Data
+
+There are 25 wards in the City of Toronto. Based 2016 census data, the average population per ward is 109,263, with standard deviation of 7,472. The wards with the highest population are: Etobicoke-Lakeshore (Ward 3) at 129,080, Willowdale (Ward 18) at 118,800, and Etobicoke North (Ward 1) at 118,040. The wards with the lowest population are: Don Valley East (Ward 16) at 94,580, Scarborough North (Ward 23) at 98,800, and Scarborough-Rouge Park (Ward 25) at 102,275.
+
+Average household income level per ward is \$101,161, with standard deviation of \$37,772. The wards with the highest household income are: Don Valley West (Ward 15) at \$216,158, University-Rosedale (Ward 11) at \$104,310, and Eglinton-Lawrence (Ward 8) at \$162,674. The wards with the lowest household income are: Humber River-Black Creek (Ward 7) at \$65,458, York South-Weston (Ward 5) at \$67,964, and Scarborough Centre (Ward 21) at \$70,624.
+
+### Comparing Number of Clinics with Ward Population
+
+As seen in @fig-compare_clinic_income, there is a slightly positive correlation between the number of clinics and the average household income in a ward, with correlation coefficient of 0.26. The top three wards with the highest population levels, Etobicoke-Lakeshore (Ward 3), Willowdale (Ward 18) and Etobicoke North (Ward 1) have a wide spread of number of clinics, with 28, 17, 11 clinics respectively. The bottom three wards with lowest population, Don Valley East (Ward 16), Scarborough North (Ward 23) and Scarborough-Rouge Park (Ward 25), have average number of clinics per ward, with 14, 15, and 12 clinics respectively.
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| label: fig-compare_clinic_population
+#| fig-cap: "Two visualizations for number of clinics vs. population"
+#| fig-subcap: ["Scatterplot","Bargraph"]
+#| layout-ncol: 2
+
+summarized_clinic_data |>
+  ggplot(aes(x = population, y = num_clinics, label = ward_code)) + 
+  geom_point() + 
+  geom_smooth(method=lm, se=FALSE) + 
+  geom_text(hjust=-0.5, vjust=0.5) +
+  labs(
+    title = "Correlation between clinics and population",
+    x = "Population",
+    y = "Number of clinics",
+    label = "Ward Code"
+  )
+
+# Reference chart syntax from https://github.com/rachaellam/Toronto-Crime-Rates/blob/main/outputs/paper/toronto_crime_analysis.Rmd
+summarized_clinic_data |>
+  ggplot(aes(
+    x = reorder(paste(sprintf("%02d", ward_code), "-", ward_name), -num_clinics),
+    y = num_clinics,
+    fill = population
+  )) + 
+  geom_bar(stat = "identity", position = position_dodge()) +
+  theme(axis.text.x = element_text(angle=90, size = 6)) + #rotate x-axis & smaller font
+  labs(
+    title = "Number of Clinics Per Ward Shaded By Population",
+    x = "Ward",
+    y = "Number of Clinics",
+    fill = "Population"
+  )  #add labels
+```
+
+### Comparing COVID-19 Clinics with Ward Income
+
+As seen in @fig-compare_clinic_income, there is no observable correlation between the number of clinics and the average household income in a ward, with correlation coefficient of 0.06.
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| label: fig-compare_clinic_income
+#| fig-cap: "Two visualizations for number of clinics vs. income"
+#| fig-subcap: ["Scatterplot", "Bargraph"]
+#| layout-ncol: 2
+
+summarized_clinic_data |>
+  ggplot(aes(x = income, y = num_clinics, label = ward_code)) + 
+  geom_point() + 
+  geom_smooth(method=lm, se=FALSE) + 
+  geom_text(hjust=-0.5, vjust=0.5) + 
+  labs(
+    title = "Correlation between clinics and income",
+    x = "Household income",
+    y = "Number of clinics",
+    label = "Ward Code"
+  )
+
+# Reference chart syntax from https://github.com/rachaellam/Toronto-Crime-Rates/blob/main/outputs/paper/toronto_crime_analysis.Rmd
+summarized_clinic_data |>
+  ggplot(aes(
+    x = reorder(paste(sprintf("%02d", ward_code), "-", ward_name), -num_clinics),
+    y = num_clinics,
+    fill = income
+  )) + 
+  geom_bar(stat = "identity", position = position_dodge()) +
+  theme(axis.text.x = element_text(angle=90, size = 6)) + #rotate x-axis & smaller font
+  labs(
+    title = "Number of Clinics Per Ward Shaded By Income",
+    x = "Ward",
+    y = "Number of Clinics",
+    fill = "Household Income"
+  )  #add labels
+```
 
 ## Discussion
 
+Overall there is a slightly positive relationship between the number of COVID-19 immunization clinics and population within each ward, which is matching to the expectation that clinic sites are established based on demographic data. There is no correlation found between number of clinics and household income levels, which demonstrated there is no evidence of systematic discrimination against vaccine access based on income alone.
+
+Based on @fig-clinic_statistics, most of the currently active COVID-19 clinics (96%) are operated through local pharmacies like Shoppers Drug Mart or Rexall. As such, this analysis may be a reflection of the existing pharmacy infrastructure across Toronto instead. The results above demonstrated that existing pharmacy network is reasonable equitable across Toronto, therefore it is a good infrastructure to provide access to COVID-19 to the general public.
+
+There are potential measurement errors in the dataset used for this analysis. First, with regards to the measurement of COVID-19 immunization clinics, the data is not inclusive of all vaccine site, such as doctor's office or pop-up sites. There is also the potential for human error for data entry. For example, two immunization sites were wrongfully categorized to "NA". Either the sites did not belong in Toronto or they were not matched to the correct wards. Third, even though the dataset itself is listed as being refreshed daily, the reliability of data sources and frequency of data updates is unknown.
+
+Also, with the usage of ward profile data based on 2016 Census, the data may be outdated it is collected 7 years ago. There are also various errors that may exist in census data [@censusErrors]: *coverage errors* when data is incorrectly processed like omissions or misclassifications; *non-response errors* when respondent did not not provide full information; *response errors* when a problem was not understood properly by the respondent; *processing errors* as information is entered incorrectly; and *sampling errors* where the sample selected for census does not represent the general population.
+
+There are several limitations to this analysis. As the COVID-19 immunization clinic dataset is a snapshot as of a point in time, it is not possible to analyze the changes in clinic availability over time. Also, the dataset only records which locations offer COVID-19 vaccines, but does not properly contain information with regards to opening hours or eligibility, which are also important factors to assess availability. Lastly, it would have been useful to include the utilization rates for each clinic for better assessment of public needs. Unfortunately this dataset is not available on the Open Data Toronto Portal [@rOpenDataToronto].
+
 ## Conclusion
 
-## Appendix
+This paper analyzed COVID-19 immunization clinic data to assess whether there is equitable access to vaccines across City of Toronto. Our data analysis showed that there is a slightly positive correlation between the number of clinics and the population in wards. There is no evidence of systematic discrimination in the distribution of clinic sites as there is no correlation between the number of clinics and household incomes in wards. As most COVID-19 vaccines are offered through major pharmacy chains, this analysis can also be extended to indicate that there is a reasonably equitable access to pharmacies across the city. Future analysis with newer census data, clinic distribution over time, as well as including clinic utilization rate in analysis will be useful to continue investigate into the access to COVID-19 vaccines within the City of Toronto.
 
 ## Reference

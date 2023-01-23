@@ -1,5 +1,5 @@
 #### Preamble ####
-# Purpose: Download dataset of Covid19 clinics across Toronto, and the corresonding ward population
+# Purpose: Download dataset of Covid19 clinics across Toronto, and the corresonding ward profile
 # Author: Christina Wei
 # Date: 19 January 2023
 # Contact: christina.wei@mail.utoronto.ca
@@ -8,7 +8,7 @@
 # Datasets:
   # Covid clinic information from https://open.toronto.ca/dataset/covid-19-immunization-clinics/
   # Ward information from https://open.toronto.ca/dataset/city-wards/
-  # Ward population from https://open.toronto.ca/dataset/ward-profiles-2018-25-ward-model/
+  # Ward profile from https://open.toronto.ca/dataset/ward-profiles-2018-25-ward-model/
 
 #### Workspace setup #### 
 
@@ -44,15 +44,15 @@ write_csv (
 )
 
 
-#### Download and write ward population data ####
+#### Download and write ward profile data ####
 
-raw_ward_population_data = download_data_from_opendatatoronto (
+raw_ward_profile_data = download_data_from_opendatatoronto (
   package_id = "ward-profiles-2018-25-ward-model",
   resource_id = "9ec6c37a-a388-4e45-9e6f-da6284952069"
 )
 
 # write data for the first tab: "2016 Census One Variable"
 write_csv (
-  x = as.data.frame(raw_ward_population_data[1]),
-  file = "inputs/data/raw_ward_population_data.csv"
+  x = as.data.frame(raw_ward_profile_data[1]),
+  file = "inputs/data/raw_ward_profile_data.csv"
 )
