@@ -1,26 +1,27 @@
-ward_name,ward_code,population,income,num_clinics
-Beaches-East York,19,109465,104123,22
-Davenport,9,108470,80807,12
-Don Valley East,16,94580,80648,14
-Don Valley North,17,110080,87491,15
-Don Valley West,15,102510,216158,13
-Eglinton-Lawrence,8,114395,162674,15
-Etobicoke Centre,2,118020,128448,14
-Etobicoke North,1,118040,73374,11
-Etobicoke-Lakeshore,3,129080,105994,28
-Humber River-Black Creek,7,108035,65458,9
-Parkdale-High Park,4,108805,99784,18
-Scarborough Centre,21,112605,70624,27
-Scarborough North,23,98800,78984,15
-Scarborough Southwest,20,110280,78561,12
-Scarborough-Agincourt,22,105540,75768,12
-Scarborough-Guildwood,24,102390,72289,15
-Scarborough-Rouge Park,25,102275,99715,12
-Spadina-Fort York,10,115510,103047,27
-Toronto Centre,13,103805,75382,29
-Toronto-Danforth,14,106875,101323,17
-Toronto-St. Paul's,12,107900,155470,14
-University-Rosedale,11,104310,170832,28
-Willowdale,18,118800,87416,17
-York Centre,6,104320,86717,19
-York South-Weston,5,116685,67954,19
+ward_name,num_clinics,ward_code,population,income
+Beaches-East York,22,19,109465,104123
+Davenport,12,9,108470,80807
+Don Valley East,14,16,94580,80648
+Don Valley North,15,17,110080,87491
+Don Valley West,13,15,102510,216158
+Eglinton-Lawrence,15,8,114395,162674
+Etobicoke Centre,14,2,118020,128448
+Etobicoke North,11,1,118040,73374
+Etobicoke-Lakeshore,28,3,129080,105994
+Humber River-Black Creek,9,7,108035,65458
+Parkdale-High Park,18,4,108805,99784
+Scarborough Centre,27,21,112605,70624
+Scarborough North,15,23,98800,78984
+Scarborough Southwest,12,20,110280,78561
+Scarborough-Agincourt,12,22,105540,75768
+Scarborough-Guildwood,15,24,102390,72289
+Scarborough-Rouge Park,12,25,102275,99715
+Spadina-Fort York,27,10,115510,103047
+Toronto Centre,29,13,103805,75382
+Toronto-Danforth,17,14,106875,101323
+Toronto-St. Paul's,14,12,107900,155470
+University-Rosedale,28,11,104310,170832
+Willowdale,17,18,118800,87416
+York Centre,19,6,104320,86717
+York South-Weston,19,5,116685,67954
+NA,2,0,NA,NA

@@ -49,7 +49,6 @@ cleaned_clinic_data =
     location_id,
     location_name,
     location_type,
-    geometry,
     ward_name
   )
 
@@ -89,6 +88,10 @@ cleaned_ward_data =
     ward_code = as.numeric(ward_code)
   )
 
+cleaned_ward_data =
+  cleaned_ward_data |>
+  add_row(ward_code = 00, ward_name = NA)
+
 # remove working variables from workspace
 rm(raw_ward_data)
 
@@ -124,11 +127,11 @@ merge_ward_profile_data = tibble(
 )
 
 # combine ward code, name, population, and income into one table
-cleaned_ward_data = 
-  merge(
+cleaned_ward_data =
+  left_join(
     cleaned_ward_data,
     merge_ward_profile_data,
-    by = "ward_code"
+    by = "ward_code",
   )
 
 # remove working variables from workspace
@@ -150,8 +153,8 @@ summarized_clinic_data =
 # combine summarized clinic data with ward population and income
 summarized_clinic_data = 
   merge(
-    cleaned_ward_data,
     summarized_clinic_data,
+    cleaned_ward_data,
     by = "ward_name"
   )
 
@@ -181,14 +184,14 @@ class(summarized_clinic_data$income) == "numeric"
 class(summarized_clinic_data$num_clinics) == "integer"
 
 # data values
-min(summarized_clinic_data$ward_code) == 1 #smaller ward code is 1
+min(summarized_clinic_data$ward_code) == 0 #smaller ward code is 0 (for NA)
 max(summarized_clinic_data$ward_code) == 25 #largest ward code is 25
-min(summarized_clinic_data$population) > 0 #population greater than 0
-max(summarized_clinic_data$population) < 1000000 #population less than 1 million
-min(summarized_clinic_data$income) > 0 #income greater than 0
-max(summarized_clinic_data$income) < 1000000 #income less than 1 million
-min(summarized_clinic_data$num_clinics) > 0 #number of clincis greater than 0
-max(summarized_clinic_data$num_clinics) < 1000 #number of clinics less than 1000
+min(summarized_clinic_data$population, na.rm = TRUE) > 0 #population greater than 0
+max(summarized_clinic_data$population, na.rm = TRUE) < 1000000 #population less than 1 million
+min(summarized_clinic_data$income, na.rm = TRUE) > 0 #income greater than 0
+max(summarized_clinic_data$income, na.rm = TRUE) < 1000000 #income less than 1 million
+min(summarized_clinic_data$num_clinics, na.rm = TRUE) > 0 #number of clincis greater than 0
+max(summarized_clinic_data$num_clinics, na.rm = TRUE) < 1000 #number of clinics less than 1000
 
 
 #### Write cleaned dataset to file ####
