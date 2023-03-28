@@ -2,7 +2,7 @@
 title: "No Evidence of Discrimination Accessing COVID-19 Immunization Clinics Across the City of Toronto"
 title-block-banner: true
 #subtitle: "TBD"
-abstract: "COVID-19 immunization clinic and ward profile datasets were used in the assessment of vaccine access across the City of Toronto. Based on the analysis of number of clinics and household income, no systematic discrimation was discovered as there is no correlation found between the two variables. There is a slightly positive correlation between number of clinics and population, supporting the hypothesis that COVID-19 clinic location is related to the the number of residents within its proximity. Further analysis should be performed to analyze utilization data alongside COVID-19 clinic access."
+abstract: "COVID-19 immunization clinic and ward profile datasets were used in the assessment of vaccine access across the City of Toronto. Based on the analysis of number of clinics and household income, no systematic discrimination was discovered as there is no correlation found between the two variables. There is a slightly positive correlation between number of clinics and population, supporting the hypothesis that COVID-19 clinic location is related to the the number of residents within its proximity. Further analysis should be performed to analyze utilization data alongside COVID-19 clinic access."
 thanks: "Code and data supporting this analysis is available at: https://github.com/christina-wei/INF3014-1-Covid-Clinics.git"
 author: "Christina Wei"
 date: today
